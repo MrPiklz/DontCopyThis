@@ -7,9 +7,9 @@ services:
     ports:
       - 5432
     environment:
-      POSTGRES_USER: ${USERDB}
-      POSTGRES_DB: ${DBNAME}
-      POSTGRES_PASSWORD: ${PASSWORDDB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     command: |
