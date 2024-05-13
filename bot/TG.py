@@ -12,8 +12,7 @@ import shutil
 import subprocess
 load_dotenv()
 
-#TOKEN = os.getenv('TOKEN')
-TOKEN = "6300654972:AAHKEsRn11BZW1ANXZsf9ZgPzA6mqw9R5Bc"
+TOKEN = os.getenv('TOKEN')
 # Подключаем логирование
 logging.basicConfig(
     filename='logfile.txt', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
