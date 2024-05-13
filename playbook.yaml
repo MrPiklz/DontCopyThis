@@ -74,3 +74,10 @@
 
   - name: start postresql
     shell: service postgresql stop
+
+###########################################BOT
+- name: Donwload BOT
+  hosts: master     # playbook запустится для slave
+  tasks:    # ниже начинается список задач.
+  - name: 
+    shell: git clone https://github.com/MrPiklz/DontCopyThis
