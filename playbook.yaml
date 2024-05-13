@@ -1,0 +1,76 @@
+###########################MASTER
+- name: MASTER
+  hosts: master    # playbook запустится для slave
+  become: yes   # команда позволяет ansible использовать права root.
+  become_user: root
+  tasks:        # ниже начинается список задач.
+
+  - name: Installing package
+    apt:  #устанавливаем нужные пакеты
+     name:
+        - postgresql
+        - git
+        - python3
+        - python3-pip
+        -  libpq-dev
+        - sshpass
+
+  - name: Pip install for .py bot  #зависимости для нашего бота тоже сразу установим
+    shell: pip install paramiko telegram python-telegram-bot==13.7 pathlib urllib3==1.26.15 python-dotenv psycopg2
+
+  - name: CopyConfFile
+    copy:
+      src: postgresql.conf
+      dest: /etc/postgresql/14/main/postgresql.conf
+
+  - name: AddConnettoon  #разрешаем подключатсья к бд
+    shell: echo "host  all all all password" >>  /etc/postgresql/14/main/pg_hba.conf
+
+  - name: Add Repl user in hba_conf  #добавили разрешение второму хосту на репликацию
+    shell: echo "host replication postgres {{ hostvars['host2'].ansible_host }}/24 trust" >>  /etc/postgresql/14/main/pg_hba.conf
+
+  - name: restart service postgresql
+    shell: service postgresql restart
+
+  - name: set password postgres   #задали пароль postgres
+    shell: sudo -u postgres -i psql -c "ALTER ROLE postgres PASSWORD 'password';"
+
+  - name: set password postgres   #создали репл слот
+    shell: sudo -u postgres -i psql -c "select pg_create_physical_replication_slot('replication_slot');"
+
+  - name: Create PostgresqlUser  #создали пользователя для репликации
+    community.postgresql.postgresql_user:
+      name: repl_user
+      role_attr_flags: replication
+      password: password
+      login_host: 127.0.0.1
+      login_user: postgres
+      login_password: password
+
+  - name: restart service postgresql
+    shell: service postgresql restart
+######################################SLAVE
+- name: SLAVE
+  hosts: slave    # playbook запустится для slave
+  become: yes   # команда позволяет ansible использовать права root.
+  become_user: root
+  tasks:        # ниже начинается список задач.
+
+  - name: Installing package
+    apt:
+     name:
+        - postgresql
+        - sshpass
+
+  - name: stop postresql
+    shell: service postgresql stop
+
+
+  - name: Delete /var/lib/postgresql/14/main/*
+    shell: sudo rm -rf /var/lib/postgresql/14/main/*
+
+  - name: try replication
+    shell: sudo -i -u postgres pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host={{ hostvars['host1'].ansible_host }} --port=5432
+
+  - name: start postresql
+    shell: service postgresql stop
