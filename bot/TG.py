@@ -34,11 +34,11 @@ def TryToSavePhones(update: Update, context):
     if user_input == 'да':
         update.message.reply_text('Сейчас сохраним ')
         try:
-            connection = psycopg2.connect(user=os.getenv('USERDB'),
-                                      password=os.getenv('PASSWORDDB'),
-                                      host=os.getenv('HOSTDB'),
-                                      port=os.getenv('PORTDB'), 
-                                      database=os.getenv('DBNAME'))
+            connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+                                      password=os.getenv('DB_PASSWORD'),
+                                      host=os.getenv('DB_HOST'),
+                                      port=os.getenv('DB_PORT'), 
+                                      database=os.getenv('DB_DATABASE'))
             user_id = str(update.message.from_user.id) #получаем для уникального имя файа
             filename = user_id+'.tmpNUMS.txt' #Уникальный файл для чтения запросов номеров =\
             tmpFIle=open('/tmp/'+filename, 'r')
@@ -105,11 +105,11 @@ def TryToSaveMails(update: Update, context):
     if user_input == 'да':
         update.message.reply_text('Сейчас сохраним ')
         try:
-            connection = psycopg2.connect(user=os.getenv('USERDB'),
-                                      password=os.getenv('PASSWORDDB'),
-                                      host=os.getenv('HOSTDB'),
-                                      port=os.getenv('PORTDB'), 
-                                      database=os.getenv('DBNAME'))
+            connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+                                      password=os.getenv('DB_PASSWORD'),
+                                      host=os.getenv('DB_HOST'),
+                                      port=os.getenv('DB_PORT'), 
+                                      database=os.getenv('DB_DATABASE'))
             user_id = str(update.message.from_user.id) #получаем для уникального имя файа
             filename = user_id+'.tmpMAILS.txt' #Уникальный файл для чтения запросов номеров =\
             tmpFIle=open('/tmp/'+filename, 'r')
@@ -193,10 +193,10 @@ def verify_password (update: Update, context):
 #######################################
 ######################################get_release
 def get_release (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -210,10 +210,10 @@ def get_release (update: Update, context):
 #########################################
 ######################################get_uname
 def get_uname (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -227,10 +227,10 @@ def get_uname (update: Update, context):
 #########################################
 ######################################get_uptime
 def get_uptime (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -244,10 +244,10 @@ def get_uptime (update: Update, context):
 #########################################
 ######################################get_df
 def get_df (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -261,10 +261,10 @@ def get_df (update: Update, context):
 #########################################
 ######################################get_free
 def get_free (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -278,10 +278,10 @@ def get_free (update: Update, context):
 #########################################
 ######################################get_mpstat
 def get_mpstat (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -295,10 +295,10 @@ def get_mpstat (update: Update, context):
 #########################################
 ######################################get_w
 def get_w (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -312,10 +312,10 @@ def get_w (update: Update, context):
 #########################################
 ######################################get_auths
 def get_auths (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -329,10 +329,10 @@ def get_auths (update: Update, context):
 #########################################
 ######################################get_critical
 def get_critical (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -349,10 +349,10 @@ def get_critical (update: Update, context):
 #########################################
 ######################################get_ps
 def get_ps (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -366,10 +366,10 @@ def get_ps (update: Update, context):
 #########################################
 ######################################get_ss
 def get_ss (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -383,10 +383,10 @@ def get_ss (update: Update, context):
 #########################################
 ######################################get_apt_list
 def get_apt_list (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -406,10 +406,10 @@ def get_apt_list_comm(update: Update, context):
 	
 
 def get_apt_list (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -440,10 +440,10 @@ def get_services_comm(update: Update, context):
 	
 
 def get_services (update: Update, context):
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-    username = os.getenv('USER')
-    password = os.getenv('PASSWORD')
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
@@ -476,11 +476,11 @@ def get_repl_logs (update: Update, context):
 ######################################get_emails
 def get_emails (update: Update, context):
     try:
-        connection = psycopg2.connect(user=os.getenv('USERDB'),
-                                  password=os.getenv('PASSWORDDB'),
-                                  host=os.getenv('HOSTDB'),
-                                  port=os.getenv('PORTDB'), 
-                                  database=os.getenv('DBNAME'))
+        connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+                                  password=os.getenv('DB_PASSWORD'),
+                                  host=os.getenv('DB_HOST'),
+                                  port=os.getenv('DB_PORT'), 
+                                  database=os.getenv('DB_DATABASE'))
 
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM mails_s;")
@@ -499,11 +499,11 @@ def get_emails (update: Update, context):
 ######################################get_phone_numbers
 def get_phone_numbers (update: Update, context):
     try:
-        connection = psycopg2.connect(user=os.getenv('USERDB'),
-                                  password=os.getenv('PASSWORDDB'),
-                                  host=os.getenv('HOSTDB'),
-                                  port=os.getenv('PORTDB'), 
-                                  database=os.getenv('DBNAME'))
+        connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+                                  password=os.getenv('DB_PASSWORD'),
+                                  host=os.getenv('DB_HOST'),
+                                  port=os.getenv('DB_PORT'), 
+                                  database=os.getenv('DB_DATABASE'))
 
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM phone_num;")
