@@ -34,7 +34,7 @@ def TryToSavePhones(update: Update, context):
     if user_input == 'да':
         update.message.reply_text('Сейчас сохраним ')
         try:
-            connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+            connection = psycopg2.connect(user=os.getenv('DB_USER'),
                                       password=os.getenv('DB_PASSWORD'),
                                       host=os.getenv('DB_HOST'),
                                       port=os.getenv('DB_PORT'), 
@@ -105,7 +105,7 @@ def TryToSaveMails(update: Update, context):
     if user_input == 'да':
         update.message.reply_text('Сейчас сохраним ')
         try:
-            connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+            connection = psycopg2.connect(user=os.getenv('DB_USER'),
                                       password=os.getenv('DB_PASSWORD'),
                                       host=os.getenv('DB_HOST'),
                                       port=os.getenv('DB_PORT'), 
@@ -476,7 +476,7 @@ def get_repl_logs (update: Update, context):
 ######################################get_emails
 def get_emails (update: Update, context):
     try:
-        connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+        connection = psycopg2.connect(user=os.getenv('DB_USER'),
                                   password=os.getenv('DB_PASSWORD'),
                                   host=os.getenv('DB_HOST'),
                                   port=os.getenv('DB_PORT'), 
@@ -499,7 +499,7 @@ def get_emails (update: Update, context):
 ######################################get_phone_numbers
 def get_phone_numbers (update: Update, context):
     try:
-        connection = psycopg2.connect(user=os.getenv('DB_USERD'),
+        connection = psycopg2.connect(user=os.getenv('DB_USER'),
                                   password=os.getenv('DB_PASSWORD'),
                                   host=os.getenv('DB_HOST'),
                                   port=os.getenv('DB_PORT'), 
