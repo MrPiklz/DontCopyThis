@@ -472,6 +472,20 @@ def get_repl_logs (update: Update, context):
     update.message.reply_text('nyyyy gdez e logi, ny gde ze nashi logi, davai mne syda ligi, i bydem vividit')
     update.message.reply_text(result) # Отправляем сообщение пользователю
     return ConversationHandler.END # Завершаем работу обработчика диалога
+def get_repl_logs_not_docker (update: Update, context):
+    host = os.getenv('RM_HOST')
+    port = os.getenv('RM_PORT')
+    username = os.getenv('RM_USER')
+    password = os.getenv('RM_PASSWORD')
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(hostname=host, username=username, password=password, port=port)
+    stdin, stdout, stderr = client.exec_command('cat /tmp/logs/postgresql.log | grep replication | head -n 10')
+    data = stdout.read() + stderr.read()
+    stdin.close()
+    client.close()
+    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+    update.message.reply_text(data) # Отправляем сообщение пользователю
 #########################################
 ######################################get_emails
 def get_emails (update: Update, context):
