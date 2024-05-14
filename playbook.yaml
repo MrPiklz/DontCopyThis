@@ -72,6 +72,8 @@
 
   - name: restart service postgresql
     shell: service postgresql restart
+  - name: Give orives for read logs
+    shell: service chmod 777 /tmp/logs/ -R
 ######################################SLAVE
 - name: SLAVE
   hosts: slave    # playbook запустится для slave
@@ -108,7 +110,7 @@
     shell: service postgresql start
 ###########################################BOT
 - name: Donwload BOT
-  hosts: master     # playbook запустится для slave
+  hosts: bot     # playbook запустится для пк на котором будет бот
   tasks:    # ниже начинается список задач.
   - name: 
     shell: git clone https://github.com/MrPiklz/DontCopyThis
