@@ -12,7 +12,7 @@
         - git
         - python3
         - python3-pip
-        -  libpq-dev
+        - libpq-dev
         - sshpass
 
   - name: Pip install for .py bot  #зависимости для нашего бота тоже сразу установим
@@ -24,10 +24,10 @@
       dest: /etc/postgresql/14/main/postgresql.conf
 
   - name: AddConnettoon  #разрешаем подключатсья к бд
-    shell: echo "host  all all all password" >>  /etc/postgresql/14/main/pg_hba.conf
+    shell: echo "host all all all password" >>  /etc/postgresql/14/main/pg_hba.conf
 
   - name: Add Repl user in hba_conf  #добавили разрешение второму хосту на репликацию
-    shell: echo "host replication postgres {{ hostvars['host2'].ansible_host }}/24 trust" >>  /etc/postgresql/14/main/pg_hba.conf
+    shell: echo "host replication all {{ hostvars['host2'].ansible_host }}/24 trust" >>  /etc/postgresql/14/main/pg_hba.conf
 
   - name: restart service postgresql
     shell: service postgresql restart
@@ -60,21 +60,30 @@
     apt:
      name:
         - postgresql
-        - sshpass
+        - libpq-dev
+      
+  - name: Create repl_user
+    ansible.builtin.user:
+     name: repl_user
+     shell: /bin/bash
+     groups: postgres,root
+     append: yes       
+     password: password
 
   - name: stop postresql
     shell: service postgresql stop
 
-
   - name: Delete /var/lib/postgresql/14/main/*
     shell: sudo rm -rf /var/lib/postgresql/14/main/*
+    
+  - name: chmod
+    shell: chmod 777 /var/lib/postgresql/ -R
 
   - name: try replication
-    shell: sudo -i -u postgres pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host={{ hostvars['host1'].ansible_host }} --port=5432
+    shell: sudo -i -u repl_user pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host={{ hostvars['host1'].ansible_host }} --port=5432
 
   - name: start postresql
-    shell: service postgresql stop
-
+    shell: service postgresql start
 ###########################################BOT
 - name: Donwload BOT
   hosts: master     # playbook запустится для slave
