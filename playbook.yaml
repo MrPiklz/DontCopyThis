@@ -1,6 +1,6 @@
 ###########################MASTER
 - name: MASTER
-  hosts: master    # playbook запустится для slave
+  hosts: master    # playbook запустится для master
   become: yes   # команда позволяет ansible использовать права root.
   become_user: root
   tasks:        # ниже начинается список задач.
@@ -18,7 +18,7 @@
   - name: Pip install for .py bot  #зависимости для нашего бота тоже сразу установим
     shell: pip install paramiko telegram python-telegram-bot==13.7 pathlib urllib3==1.26.15 python-dotenv psycopg2
 
-  - name: CopyConfFile
+  - name: CopyConfFile  #копирование заранее подготовленного файла postgresql.conf, никаких интересных настроек в нем нет
     copy:
       src: postgresql.conf
       dest: /etc/postgresql/14/main/postgresql.conf
@@ -26,26 +26,49 @@
   - name: AddConnettoon  #разрешаем подключатсья к бд
     shell: echo "host all all all password" >>  /etc/postgresql/14/main/pg_hba.conf
 
-  - name: Add Repl user in hba_conf  #добавили разрешение второму хосту на репликацию
+  - name: Add Repl user in hba_conf  #добавили разрешение второму хосту на репликацию, зависит от указанного в инвентори ИП хост1
     shell: echo "host replication all {{ hostvars['host2'].ansible_host }}/24 trust" >>  /etc/postgresql/14/main/pg_hba.conf
 
   - name: restart service postgresql
     shell: service postgresql restart
 
   - name: set password postgres   #задали пароль postgres
-    shell: sudo -u postgres -i psql -c "ALTER ROLE postgres PASSWORD 'password';"
+    shell: sudo -u postgres -i psql -c "ALTER ROLE postgres PASSWORD '{{ hostvars['host1'].ansible_postgres_password }}';"
 
-  - name: set password postgres   #создали репл слот
+  - name: create repl slot   #создали репл слот
     shell: sudo -u postgres -i psql -c "select pg_create_physical_replication_slot('replication_slot');"
 
-  - name: Create PostgresqlUser  #создали пользователя для репликации
+
+  - name: Create PostgresqlUser {{ hostvars['host1'].ansible_db_user }} #создали пользователя для бота {{ hostvars['host1'].ansible_db_user }}
     community.postgresql.postgresql_user:
-      name: repl_user
-      role_attr_flags: replication
-      password: password
+      name: "{{ hostvars['host1'].ansible_db_user }}"
+      password: "{{ hostvars['host1'].ansible_db_password }}"
       login_host: 127.0.0.1
       login_user: postgres
-      login_password: password
+      login_password: "{{ hostvars['host1'].ansible_postgres_password }}"
+
+
+  - name: CREATE DB  #создали БД {{ hostvars['host1'].ansible_db }}
+    shell: sudo -u postgres -i psql -c "CREATE DATABASE {{ hostvars['host1'].ansible_db }};";
+
+  - name: CREATE TABLE MAILS   #Создали таблицу для мэйов
+    shell: sudo -u postgres -i psql -d {{ hostvars['host1'].ansible_db }} -c "CREATE TABLE mails_s (id  SERIAL PRIMARY KEY, mails_s text);";
+
+  - name: CRATE TABLE PHONES NUMS   #создали таблицу для номеров телефонов
+    shell: sudo -u postgres -i psql -d {{ hostvars['host1'].ansible_db }} -c "CREATE TABLE phone_num (id  SERIAL PRIMARY KEY, phone_num VARCHAR(100));";
+
+  - name: GRANT ALL PRIV FOR BD   #GRANT ALL PRIV FOR BD
+    shell: sudo -u postgres -i psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ hostvars['host1'].ansible_db }} TO {{ hostvars['host1'].ansible_db_user }};"
+
+ 
+  - name: Create PostgresqlUser  #создали пользователя для репликации
+    community.postgresql.postgresql_user:
+      name: "{{ hostvars['host1'].ansible_repl_user }}"
+      role_attr_flags: replication
+      password: "{{ hostvars['host1'].ansible_repl_password }}"
+      login_host: 127.0.0.1
+      login_user: postgres
+      login_password: "{{ hostvars['host1'].ansible_postgres_password }}"
 
   - name: restart service postgresql
     shell: service postgresql restart
@@ -64,12 +87,11 @@
       
   - name: Create repl_user
     ansible.builtin.user:
-     name: repl_user
+     name: "{{ hostvars['host1'].ansible_repl_user }}"
      shell: /bin/bash
      groups: postgres,root
      append: yes       
-     password: password
-
+     
   - name: stop postresql
     shell: service postgresql stop
 
@@ -80,7 +102,7 @@
     shell: chmod 777 /var/lib/postgresql/ -R
 
   - name: try replication
-    shell: sudo -i -u repl_user pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host={{ hostvars['host1'].ansible_host }} --port=5432
+    shell: sudo -i -u {{ hostvars['host1'].ansible_repl_user }} pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host={{ hostvars['host1'].ansible_host }} --port=5432
 
   - name: start postresql
     shell: service postgresql start
