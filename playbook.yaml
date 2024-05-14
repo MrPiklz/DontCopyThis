@@ -24,7 +24,7 @@
       dest: /etc/postgresql/14/main/postgresql.conf
 
   - name: AddConnettoon  #разрешаем подключатсья к бд
-    shell: echo "host all all all trust" >>  /etc/postgresql/14/main/pg_hba.conf
+    shell: echo "host all all all password" >>  /etc/postgresql/14/main/pg_hba.conf
 
   - name: Add Repl user in hba_conf  #добавили разрешение второму хосту на репликацию, зависит от указанного в инвентори ИП хост1
     shell: echo "host replication all {{ hostvars['host2'].ansible_host }}/24 trust" >>  /etc/postgresql/14/main/pg_hba.conf
@@ -37,7 +37,6 @@
 
   - name: create repl slot   #создали репл слот
     shell: sudo -u postgres -i psql -c "select pg_create_physical_replication_slot('replication_slot');"
-
 
   - name: Create PostgresqlUser {{ hostvars['host1'].ansible_db_user }} #создали пользователя для бота {{ hostvars['host1'].ansible_db_user }}
     community.postgresql.postgresql_user:
@@ -60,7 +59,14 @@
   - name: GRANT ALL PRIV FOR BD   #GRANT ALL PRIV FOR BD
     shell: sudo -u postgres -i psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ hostvars['host1'].ansible_db }} TO {{ hostvars['host1'].ansible_db_user }};"
 
- 
+  - name: GRANT ALL PRIV FOR BD   #GRANT ALL PRIV FOR BD
+    shell: sudo -u postgres -i psql -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {{ hostvars['host1'].ansible_db_user }};"
+
+  - name: GRANT ALL PRIV FOR BD   #GRANT ALL PRIV FOR BD
+    shell: sudo -u postgres -i psql -d {{ hostvars['host1'].ansible_db }} -c "GRANT ALL PRIVILEGES ON TABLE mails_s TO {{ hostvars['host1'].ansible_db_user }};"
+  - name: GRANT ALL PRIV FOR BD   #GRANT ALL PRIV FOR BD
+    shell: sudo -u postgres -i psql -d {{ hostvars['host1'].ansible_db }} -c "GRANT ALL PRIVILEGES ON TABLE phone_num TO {{ hostvars['host1'].ansible_db_user }};"
+
   - name: Create PostgresqlUser  #создали пользователя для репликации
     community.postgresql.postgresql_user:
       name: "{{ hostvars['host1'].ansible_repl_user }}"
