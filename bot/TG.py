@@ -675,6 +675,13 @@ def main():
         },
         fallbacks=[]
     )
+        convHandlerget_repl_logs_not_docker = ConversationHandler(
+        entry_points=[CommandHandler('get_repl_logs_not_docker', get_repl_logs_not_docker)],
+        states={
+            'get_repl_logs_not_docker': [MessageHandler(Filters.text & ~Filters.command, get_repl_logs_not_docker)],
+        },
+        fallbacks=[]
+    )
     convHandlerget_emails = ConversationHandler(
         entry_points=[CommandHandler('get_emails', get_emails)],
         states={
@@ -711,6 +718,7 @@ def main():
     dp.add_handler(convHandlerget_apt_list)
     dp.add_handler(convHandlerget_services)
     dp.add_handler(convHandlerget_repl_logs)
+    dp.add_handler(convHandlerget_repl_logs_not_docker)
     dp.add_handler(convHandlerget_emails)
     dp.add_handler(convHandlerget_phone_numbers)
 
