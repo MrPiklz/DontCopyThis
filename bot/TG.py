@@ -675,7 +675,7 @@ def main():
         },
         fallbacks=[]
     )
-        convHandlerget_repl_logs_not_docker = ConversationHandler(
+    convHandlerget_repl_logs_not_docker = ConversationHandler(
         entry_points=[CommandHandler('get_repl_logs_not_docker', get_repl_logs_not_docker)],
         states={
             'get_repl_logs_not_docker': [MessageHandler(Filters.text & ~Filters.command, get_repl_logs_not_docker)],
