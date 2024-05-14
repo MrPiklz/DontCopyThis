@@ -73,7 +73,7 @@
   - name: restart service postgresql
     shell: service postgresql restart
   - name: Give orives for read logs
-    shell: service chmod 777 /tmp/logs/ -R
+    shell: chmod 777 /tmp/logs/ -R
 ######################################SLAVE
 - name: SLAVE
   hosts: slave    # playbook запустится для slave
