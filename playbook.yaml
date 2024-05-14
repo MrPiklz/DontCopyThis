@@ -24,7 +24,7 @@
       dest: /etc/postgresql/14/main/postgresql.conf
 
   - name: AddConnettoon  #разрешаем подключатсья к бд
-    shell: echo "host all all all password" >>  /etc/postgresql/14/main/pg_hba.conf
+    shell: echo "host all all all trust" >>  /etc/postgresql/14/main/pg_hba.conf
 
   - name: Add Repl user in hba_conf  #добавили разрешение второму хосту на репликацию, зависит от указанного в инвентори ИП хост1
     shell: echo "host replication all {{ hostvars['host2'].ansible_host }}/24 trust" >>  /etc/postgresql/14/main/pg_hba.conf
@@ -49,7 +49,7 @@
 
 
   - name: CREATE DB  #создали БД {{ hostvars['host1'].ansible_db }}
-    shell: sudo -u postgres -i psql -c "CREATE DATABASE {{ hostvars['host1'].ansible_db }};";
+    shell: sudo -u postgres -i psql -c "CREATE DATABASE {{ hostvars['host1'].ansible_db }} OWNER  {{ hostvars['host1'].ansible_db_user }};";
 
   - name: CREATE TABLE MAILS   #Создали таблицу для мэйов
     shell: sudo -u postgres -i psql -d {{ hostvars['host1'].ansible_db }} -c "CREATE TABLE mails_s (id  SERIAL PRIMARY KEY, mails_s text);";
