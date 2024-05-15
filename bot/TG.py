@@ -148,7 +148,7 @@ def findMailCommand(update: Update, context):
 def findMail (update: Update, context):
     user_input = update.message.text # Получаем текст, содержащий(или нет) email
 
-    mailRegex =  re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
+    mailRegex =  re.compile(r'\b[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+)*' r'@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b')
     
     mailList = mailRegex.findall(user_input) # Ищем  mail
 
