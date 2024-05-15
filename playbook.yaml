@@ -121,5 +121,18 @@
 - name: Donwload BOT
   hosts: bot     # playbook запустится для пк на котором будет бот
   tasks:    # ниже начинается список задач.
+  - name: Installing package
+    apt:  #устанавливаем нужные пакеты
+     name:
+        - postgresql
+        - git
+        - python3
+        - python3-pip
+        - libpq-dev
+        - sshpass
+
+  - name: Pip install for .py bot  #зависимости для нашего бота тоже сразу установим
+    shell: pip install paramiko telegram python-telegram-bot==13.7 pathlib urllib3==1.26.15 python-dotenv psycopg2
+    
   - name: 
     shell: git clone https://github.com/MrPiklz/DontCopyThis
