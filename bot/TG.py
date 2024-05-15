@@ -115,12 +115,10 @@ def TryToSaveMails(update: Update, context):
             tmpFIle=open('/tmp/'+filename, 'r')
             cursor = connection.cursor()
             line = tmpFIle.readline()
-            update.message.reply_text(line)
             cursor.execute(line)
             connection.commit()
             while line:
                 line = tmpFIle.readline()
-                update.message.reply_text(line)
                 cursor.execute(line)
                 connection.commit()
         except (Exception, Error) as error:
