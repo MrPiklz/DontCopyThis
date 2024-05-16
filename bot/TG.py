@@ -439,11 +439,6 @@ def get_services (update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
-	
-    user_input = update.message.text # Получаем текст, содержащий(или нет) имя пакета
-    if user_input == '':
-        update.message.reply_text('так не бывает') # Отправляем сообщение пользователю
-        return ConversationHandler.END # Завершаем работу обработчика диалога
 
     stdin, stdout, stderr = client.exec_command('systemctl list-units --type service')
     data = stdout.read() + stderr.read()
