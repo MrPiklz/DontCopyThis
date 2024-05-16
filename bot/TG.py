@@ -431,12 +431,6 @@ def get_apt_list (update: Update, context):
     return ConversationHandler.END # Завершаем работу обработчика диалога
 #########################################
 ######################################get_services
-def get_services_comm(update: Update, context):
-    update.message.reply_text('Введите сервис для отображения')
-
-    return 'get_services'
-	
-
 def get_services (update: Update, context):
     host = os.getenv('RM_HOST')
     port = os.getenv('RM_PORT')
@@ -451,7 +445,7 @@ def get_services (update: Update, context):
         update.message.reply_text('так не бывает') # Отправляем сообщение пользователю
         return ConversationHandler.END # Завершаем работу обработчика диалога
 
-    stdin, stdout, stderr = client.exec_command('apt list --installed | grep ' + user_input)
+    stdin, stdout, stderr = client.exec_command('systemctl list-units --type service')
     data = stdout.read() + stderr.read()
     stdin.close()
     client.close()
@@ -660,7 +654,7 @@ def main():
         fallbacks=[]
     )
     convHandlerget_services = ConversationHandler(
-        entry_points=[CommandHandler('get_services', get_services_comm)],
+        entry_points=[CommandHandler('get_services', get_services)],
         states={
             'get_services': [MessageHandler(Filters.text & ~Filters.command, get_services)],
         },
