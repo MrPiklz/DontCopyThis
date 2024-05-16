@@ -440,7 +440,7 @@ def get_services (update: Update, context):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
 
-    stdin, stdout, stderr = client.exec_command('systemctl list-units --type service')
+    stdin, stdout, stderr = client.exec_command('systemctl list-units --type service --state running')
     data = stdout.read() + stderr.read()
     stdin.close()
     client.close()
