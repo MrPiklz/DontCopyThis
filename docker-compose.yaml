@@ -12,7 +12,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
-    command: /bin/sh -c "psql -c \"create user ${DB_REPL_USER} with replication encrypted password '${DB_REPL_PASSWORD}';\""
     command: |
       postgres 
       -c wal_level=replica 
@@ -39,13 +38,13 @@ services:
     ports:
       - ${DB_REPL_PORT}
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGUSER: ${DB_USER}
+      PGPASSWORD: ${DB_PASSWORD}
     command: |
       bash -c "
       cp /var/lib/postgresql/data/* /var/lib/postgresql/data2/ -r;
       rm /var/lib/postgresql/data -r;
-      until pg_basebackup --pgdata=/var/lib/postgresql/data -R -U ${DB_REPL_USER} --slot=replication_slot --host=${DB_HOST} --port=${DB_PORT}
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=${DB_HOST} --port=${DB_PORT}
       do
       echo 'Waiting for primary to connect...'
       sleep 1s
