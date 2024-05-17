@@ -37,14 +37,14 @@ services:
     ports:
       - 5433
     environment:
-      password: password
-      PGUSER: replicator
-      PGPASSWORD: replicator_password
+      password: ${DB_REPL_USER}
+      PGUSER: ${DB_REPL_USER}
+      PGPASSWORD: ${DB_REPL_PASSWORD}
     command: |
       bash -c "
       cp /var/lib/postgresql/data/* /var/lib/postgresql/data2/ -r;
       rm /var/lib/postgresql/data -r;
-      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=postgres_primary --port=5432
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=${DB_HOST} --port=${DB_PORT}
       do
       echo 'Waiting for primary to connect...'
       sleep 1s
