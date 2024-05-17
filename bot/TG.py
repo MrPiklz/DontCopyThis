@@ -178,7 +178,7 @@ def verify_passwordCommand(update: Update, context):
 def verify_password (update: Update, context):
     user_input = update.message.text # Получаем текст, содержащий(или нет) email
 
-    passwordRegex =  re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$') #Проверка сложности
+    passwordRegex =  re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\'|<>№?*+}{[\]}"])[A-Za-z\d!@#$%^&*()\'|<>№?*+}{[\]}"]{8,}$') #Проверка сложности
     
     mailList = passwordRegex.findall(user_input) # Ищем  совпадения, если совпало то гуд пасс
 
@@ -334,7 +334,7 @@ def get_critical (update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
-    stdin, stdout, stderr = client.exec_command('journalctl -p 2')
+    stdin, stdout, stderr = client.exec_command('journalctl -p 2 | tail -5')
     data = stdout.read() + stderr.read()
     stdin.close()
     client.close()
@@ -371,7 +371,7 @@ def get_ss (update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
-    stdin, stdout, stderr = client.exec_command('ss | head -n 10')
+    stdin, stdout, stderr = client.exec_command('ss | tail -10')
     data = stdout.read() + stderr.read()
     stdin.close()
     client.close()
@@ -388,7 +388,7 @@ def get_apt_list (update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
-    stdin, stdout, stderr = client.exec_command('apt list --installed | head -n 10')
+    stdin, stdout, stderr = client.exec_command('apt list --installed | tail -10')
     data = stdout.read() + stderr.read()
     stdin.close()
     client.close()
@@ -414,7 +414,7 @@ def get_apt_list (update: Update, context):
 	
     user_input = update.message.text # Получаем текст, содержащий(или нет) имя пакета
     if user_input == 'все':
-        stdin, stdout, stderr = client.exec_command('apt list --installed | head -n 15')
+        stdin, stdout, stderr = client.exec_command('apt list --installed | tail -15')
         data = stdout.read() + stderr.read()
         stdin.close()
         client.close()
@@ -450,10 +450,7 @@ def get_services (update: Update, context):
 #########################################
 ######################################get_repl_logs
 def get_repl_logs (update: Update, context):
-#    stdin, stdout, stderr = os.system('cat /tmp/logs/postgresql.log | grep replication | head -n 10')
-#    data = stdout.read() + stderr.read()
-#   data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    batcmd="cat /tmp/logs/postgresql.log | grep replication | head -n 10"
+    batcmd="cat /tmp/logs/postgresql.log | grep replication | tail -10"
     result = subprocess.check_output(batcmd, shell=True)
     result = str(result).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
     update.message.reply_text('nyyyy gdez e logi, ny gde ze nashi logi, davai mne syda ligi, i bydem vividit')
@@ -467,7 +464,7 @@ def get_repl_logs_not_docker (update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
-    stdin, stdout, stderr = client.exec_command('cat /tmp/logs/postgresql.log | grep replication | head -n 10')
+    stdin, stdout, stderr = client.exec_command('cat /tmp/logs/postgresql.log | grep replication | tail -10')
     data = stdout.read() + stderr.read()
     stdin.close()
     client.close()
