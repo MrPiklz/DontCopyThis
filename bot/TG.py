@@ -50,8 +50,9 @@ def TryToSavePhones(update: Update, context):
                 line = tmpFIle.readline()
                 cursor.execute(line)
                 connection.commit()
-            cursor.close()
-            connection.close()
+            if connection is not None:
+                cursor.close()
+                connection.close()
         except (Exception, Error) as error:
             logging.error("Ошибка при работе с PostgreSQL: %s", error)
             return ConversationHandler.END 
@@ -123,8 +124,9 @@ def TryToSaveMails(update: Update, context):
                 line = tmpFIle.readline()
                 cursor.execute(line)
                 connection.commit()
-            cursor.close()
-            connection.close()
+            if connection is not None:
+                cursor.close()
+                connection.close()
         except (Exception, Error) as error:
             logging.error("Ошибка при работе с PostgreSQL: %s", error)
             return ConversationHandler.END 
@@ -490,7 +492,10 @@ def get_emails (update: Update, context):
         results = cursor.fetchall() 
         for row in results: 
             data= "ID: {}".format(row[0])+"  "+"Mail: {}".format(row[1])
-            update.message.reply_text(data) 
+            update.message.reply_text(data)
+        if connection is not None:
+            cursor.close()
+            connection.close()
     except (Exception, Error) as error:
         update.message.reply_text("Ошибка при работе с PostgreSQL: %s", error)
     finally:
