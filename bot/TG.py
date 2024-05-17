@@ -50,6 +50,8 @@ def TryToSavePhones(update: Update, context):
                 line = tmpFIle.readline()
                 cursor.execute(line)
                 connection.commit()
+            cursor.close()
+            connection.close()
         except (Exception, Error) as error:
             logging.error("Ошибка при работе с PostgreSQL: %s", error)
             return ConversationHandler.END 
@@ -121,6 +123,8 @@ def TryToSaveMails(update: Update, context):
                 line = tmpFIle.readline()
                 cursor.execute(line)
                 connection.commit()
+            cursor.close()
+            connection.close()
         except (Exception, Error) as error:
             logging.error("Ошибка при работе с PostgreSQL: %s", error)
             return ConversationHandler.END 
